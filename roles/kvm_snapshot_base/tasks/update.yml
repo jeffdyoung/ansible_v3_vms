@@ -39,7 +39,7 @@
     command: >
       virt-install --name {{ kvm_snapshot_base_name }}
       --vcpus=24 --ram=4096
-      --os-type=linux --os-variant={{ 'rhel7' if kvm_snapshot_base_os in ['rhel7', 'centos7'] else kvm_snapshot_base_os }}
+      --os-type=linux --os-variant={{ 'rhel7' if kvm_snapshot_base_os in ['rhel7', 'centos7'] else 'fedora-unknown' if kvm_snapshot_base_os in ['fedora25', 'fedora26','fedora27'] else kvm_snapshot_base_os }}
       --controller type=scsi,model=virtio-scsi
       --location={{ kvm_snapshot_base_repos[kvm_snapshot_base_os]['netboot'] }}
       --disk path=/dev/{{ kvm_snapshot_base_vg }}/{{ kvm_snapshot_base_name }},cache=none,io=native,discard=unmap,bus=scsi

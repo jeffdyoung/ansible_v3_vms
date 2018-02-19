@@ -1,9 +1,7 @@
 ---
 kvm_snapshot_cluster_parent_domain: example.com
 kvm_snapshot_cluster_masters:
-- master1
-- master2
-- master3
+- master
 kvm_snapshot_cluster_masters_groups:
 - etcd
 - masters
@@ -15,14 +13,5 @@ kvm_snapshot_cluster_infra_groups:
 kvm_snapshot_cluster_app:
 - node1
 - node2
-- node3
 kvm_snapshot_cluster_app_groups:
 - nodes
-kvm_snapshot_cluster_bastions:
-- bastion
-kvm_snapshot_cluster_bastion_group:
-- bastions
-kvm_snapshot_cluster_lb:
-- loadbalancer1
-kvm_snapshot_cluster_nfs:
-- support1

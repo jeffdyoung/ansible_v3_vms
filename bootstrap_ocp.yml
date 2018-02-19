@@ -1,0 +1,110 @@
+#! ansible-playbook -K
+---
+- name: Checkout openshift-ansible
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Pull openshift-ansible from git
+    git:
+      repo: https://github.com/openshift/openshift-ansible.git
+      dest: openshift-ansible
+
+- name: Bootstrap the cluster
+  hosts: localhost
+  connection: local
+  become: yes
+  roles:
+  - kvm_snapshot_cluster
+
+- name: Run pre-req steps on cluster hosts
+  hosts: bootstrap_hosts
+  vars:
+    rhel_repo_base: http://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel/
+    rhel_repo_arch_dir_map:
+      x86_64: server
+      ppc64le: power-le
+      aarch64: arm-64
+      s390x: system-z
+    rhel_repo_common: "{{ rhel_repo_base ~ rhel_repo_arch_dir_map[ansible_architecture] }}/7/7Server/{{ ansible_architecture }}"
+    rhel_base_repo: "{{ rhel_repo_common }}/os"
+    # TODO: handle arches that do not have extras published (aarch64)
+    rhel_extras_repo: "{{ rhel_repo_common }}/extras/os"
+    #rhel_fastdatapath_repo: "{{ rhel_repo_common }}/fast-datapath/os"
+    rhel_fastdatapath_repo: "http://download.eng.bos.redhat.com/brewroot/repos/fast-datapath-rhel-7-build/latest/{{ ansible_architecture }}"
+    guest_repos:
+      RedHat:
+      - id: rhel_base
+        name: rhel_base
+        baseurl: "{{ rhel_base_repo }}"
+      - id: rhel_extras
+        name: rhel_extras
+        baseurl: "{{ rhel_extras_repo }}"
+      - id: rhel_fastdatapath
+        name: rhel_fastdatapath
+        baseurl: "{{ rhel_fastdatapath_repo }}"
+      - id: AtomicOpenShift-3.9-Puddle
+        name: AtomicOpenShift-3.9-Puddle
+        baseurl: http://download.lab.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift/3.9/latest/$basearch/os
+  handlers:
+  - name: Restart Docker
+    systemd:
+      name: docker
+      state: restarted
+    when: docker_stat.stat.exists
+  tasks:
+  - name: Test if docker present
+    stat:
+      path: /usr/bin/docker
+    register: docker_stat
+
+  - name: Configure docker storage
+    copy:
+      content: |
+        STORAGE_DRIVER="overlay2"
+        DOCKER_ROOT_VOLUME=yes
+      dest: /etc/sysconfig/docker-storage-setup
+    when: not docker_stat.stat.exists
+
+  - yum_repository:
+      name: "{{ item.id }}"
+      description: "{{ item.name }}"
+      baseurl: "{{ item.baseurl }}"
+      gpgcheck: no
+    with_items:
+    - "{{ guest_repos[ansible_distribution] | default([]) }}"
+
+  - name: Install the Red Hat CA
+    package:
+      name: http://hdn.corp.redhat.com/rhel7-csb-stage/RPMS/noarch/redhat-internal-cert-install-0.1-7.el7.csb.noarch.rpm
+      state: present
+    notify: Restart Docker
+
+  - name: install packages for testing
+    command: "yum -y install ansible python-setuptools docker rsync git atomic-openshift atomic-openshift-tests"
+  
+  - name: set insecure registries
+    lineinfile:
+      path: /etc/sysconfig/docker
+      regexp: '^OPTIONS='
+      state: present
+      line: "OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-driver=journald --signature-verification=false'"
+
+  - name: create data directory for openshfit
+    command: "mkdir -p /mnt/datadir"
+
+  - name: create ram disk for openshift data
+    command: "mount -t tmpfs -o size=25G xfs /mnt/datadir"
+
+  - name: turn off firewalld (for now)
+    command: "systemctl stop firewalld"
+
+  - name: disable firewalld
+    command: "systemctl disable firewalld"
+
+  - name: start docker
+    command: "systemctl start docker"
+
+  - name: enable docker
+    command: "systemctl enable docker"
+
+  

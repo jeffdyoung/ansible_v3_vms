@@ -3,7 +3,10 @@
 ###Basic Usage with cluster id of test
 ```
 ansible-playbook bootstrap.yml -e kvm_snapshot_cluster_id=test -K
-ansible-playbook -i inventory/cluster-test/hosts openshift-ansible/playbooks/byo/openshift-cluster/config.yml
+#ansible-playbook -i inventory/cluster-test/hosts openshift-ansible/playbooks/byo/openshift-cluster/config.yml
+
+ansible-playbook -i inventory/cluster-ocp/hosts openshift-ansible/playbooks/prerequisites.yml 
+ansible-playbook -i inventory/cluster-ocp/hosts openshift-ansible/playbooks/deploy_cluster.yml 
 
 ```
 ###Variables

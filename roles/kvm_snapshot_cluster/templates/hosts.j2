@@ -3,6 +3,7 @@ etcd
 masters
 nodes
 
+
 [etcd]
 {% for host in kvm_snapshot_cluster_masters %}
 {{ host }}.{{ kvm_snapshot_cluster_domain }}

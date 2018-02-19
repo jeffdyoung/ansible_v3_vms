@@ -5,7 +5,8 @@ kvm_snapshot_base_vg_os_version: "{{ ansible_distribution_major_version if kvm_s
 kvm_snapshot_base_vg_prefix: "{{ kvm_snapshot_base_vg_os if kvm_snapshot_base_vg_os == 'rhel' else kvm_snapshot_base_vg_os ~ kvm_snapshot_base_vg_os_version }}"
 kvm_snapshot_base_vg_suffix: "{{ ansible_hostname }}"
 kvm_snapshot_base_netboot_fedora_base_path: http://download-node-02.eng.bos.redhat.com/composes/released/
-kvm_snapshot_base_netboot_fedora_version_dir: "F{{ kvm_snapshot_base_os [-2:] }}{{ '-Secondary' if kvm_snapshot_base_arch in ['aarch64', 'ppc64le', 's390x'] else '' }}"
+#kvm_snapshot_base_netboot_fedora_version_dir: "F{{ kvm_snapshot_base_os [-2:] }}{{ '-Secondary' if kvm_snapshot_base_arch in ['aarch64', 'ppc64le', 's390x'] else '' }}"
+kvm_snapshot_base_netboot_fedora_version_dir: "F-{{ kvm_snapshot_base_os [-2:] }}"
 kvm_snapshot_base_netboot_fedora_repo: "{{ kvm_snapshot_base_netboot_fedora_base_path ~ kvm_snapshot_base_netboot_fedora_version_dir }}/GOLD/Server/{{ kvm_snapshot_base_arch }}/os/"
 kvm_snapshot_base_netboot_centos_base_path: http://mirror.centos.org/
 kvm_snapshot_base_netboot_centos_arch_dir: "{{ 'centos' if kvm_snapshot_base_arch == 'x86_64' else 'altarch' }}"
@@ -28,5 +29,8 @@ kvm_snapshot_base_repos:
     netboot: "{{ kvm_snapshot_base_netboot_fedora_repo }}"
     install: "{{ kvm_snapshot_base_netboot_fedora_repo }}"
   fedora26:
+    netboot: http://download-node-02.eng.bos.redhat.com/composes/released/F-26-GOLD-InstallTrees/ppc64le/os/
+    install: http://download-node-02.eng.bos.redhat.com/composes/released/F-26-GOLD-InstallTrees/ppc64le/os/
+  fedora27:
     netboot: "{{ kvm_snapshot_base_netboot_fedora_repo }}"
     install: "{{ kvm_snapshot_base_netboot_fedora_repo }}"

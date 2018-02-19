@@ -1,0 +1,26 @@
+---
+- assert:
+    that:
+    - kvm_snapshot_cluster_id is defined
+
+- include_role:
+    name: kvm_network
+  vars:
+    kvm_network_name: "{{ kvm_snapshot_cluster_id }}"
+    kvm_network_domain: "{{ kvm_snapshot_cluster_domain }}"
+
+- include_role:
+    name: kvm_snapshot_guest
+  vars:
+    kvm_snapshot_guest_hostnames: "{{ kvm_snapshot_cluster_id }}"
+    kvm_snapshot_guest_ram: 102400
+    kvm_snapshot_guest_vcpus: 48
+- name: Create cluster inventory directories
+  file:
+    path: "inventory/cluster-{{ kvm_snapshot_cluster_id }}/group_vars"
+    state: directory
+
+- name: Create cluster inventory
+  template:
+    src: hosts.j2
+    dest: "inventory/cluster-{{ kvm_snapshot_cluster_id }}/hosts"

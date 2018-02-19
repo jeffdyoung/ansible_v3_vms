@@ -8,7 +8,8 @@
     name: kvm_snapshot_guest
     tasks_from: teardown
   vars:
-    kvm_snapshot_guest_hostnames: "{{ kvm_snapshot_cluster_masters | union(kvm_snapshot_cluster_infra) | union(kvm_snapshot_cluster_app) }}"
+    kvm_snapshot_guest_hostnames: "{{ kvm_snapshot_cluster_bastions | union(kvm_snapshot_cluster_lb) | union(kvm_snapshot_cluster_nfs) | union(kvm_snapshot_cluster_masters) | union(kvm_snapshot_cluster_infra) | union(kvm_snapshot_cluster_app) }}"
+#    kvm_snapshot_guest_hostnames: "{{ kvm_snapshot_cluster_masters | union(kvm_snapshot_cluster_infra) | union(kvm_snapshot_cluster_app) }}"
 
 - include_role:
     name: kvm_network

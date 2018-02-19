@@ -1,0 +1,17 @@
+[AtomicOpenShift-3.9-Puddle]
+name=AtomicOpenShift-3.9-Puddle
+baseurl=http://download.lab.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift/3.9/latest/$basearch/os
+gpgcheck=0
+enabled=1
+
+[AtomicOpenShift-3.9-Puddle-debug]
+name=AtomicOpenShift-3.9-Puddle Debuginfo
+baseurl=http://download.lab.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift/3.9/latest/$basearch/debuginfo
+gpgcheck=0
+enabled=0
+
+[AtomicOpenShift-3.9-Puddle-sources]
+name=AtomicOpenShift-3.9-Puddle Sources
+baseurl=http://download.lab.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift/3.9/latest/source
+gpgcheck=0
+enabled=0

@@ -12,7 +12,7 @@
 - include_role:
     name: kvm_snapshot_guest
   vars:
-    kvm_snapshot_guest_hostnames: "{{ kvm_snapshot_cluster_masters | union(kvm_snapshot_cluster_infra) | union(kvm_snapshot_cluster_app) }}"
+    kvm_snapshot_guest_hostnames: "{{ kvm_snapshot_cluster_bastions | union(kvm_snapshot_cluster_lb) | union(kvm_snapshot_cluster_nfs) | union(kvm_snapshot_cluster_masters) | union(kvm_snapshot_cluster_infra) | union(kvm_snapshot_cluster_app) }}"
 
 - name: Create cluster inventory directories
   file:
@@ -30,7 +30,7 @@
     dest: "inventory/cluster-{{ kvm_snapshot_cluster_id }}/group_vars/OSEv3.yml"
   vars:
     cluster_deployment_type: openshift-enterprise
-    cluster_version: 3.6
+    cluster_version: 3.7
     cluster_repo_source: multiarch_puddle # aos_released, aos_puddle, aos_errata_puddle, multiarch_puddle, none
     cluster_registry:
       aos_errata_puddle: "brew-pulp-docker01.web.prod.ext.phx2.redhat.com:8888/openshift3/ose-${component}:${version}"
@@ -39,7 +39,8 @@
       aos_released: http://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/7Server/{{ kvm_snapshot_base_arch }}/ose/{{ cluster_version }}/os
       aos_puddle: http://download.eng.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift/{{ cluster_version }}/latest/{{ kvm_snapshot_base_arch }}
       aos_errata_puddle: http://download.eng.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift-errata/{{ cluster_version }}/latest/{{ kvm_snapshot_base_arch }}
-      multiarch_puddle: http://download.eng.bos.redhat.com/rcm-guest/puddles/RHAOS-multiarch/AtomicOpenShift-multiarch/{{ cluster_version }}/latest/{{ kvm_snapshot_base_arch }}/os
+      multiarch_puddle: http://download-node-02.eng.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift/{{ cluster_version }}/latest/{{ kvm_snapshot_base_arch }}/os 
+      #multiarch_puddle: http://download.eng.bos.redhat.com/rcm-guest/puddles/RHAOS-multiarch/AtomicOpenShift-multiarch/{{ cluster_version }}/latest/{{ kvm_snapshot_base_arch }}/os
     rhaos_repos:
     - id: rhaos
       name: rhaos

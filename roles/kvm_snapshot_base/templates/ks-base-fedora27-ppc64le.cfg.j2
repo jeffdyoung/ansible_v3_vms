@@ -1,0 +1,57 @@
+#version=DEVEL
+# System authorization information
+auth --enableshadow --passalgo=sha512
+# Use network installation
+install
+url --url="{{ kvm_snapshot_base_repos[kvm_snapshot_base_os]['install'] }}"
+# Use text mode install
+text
+# Run the Setup Agent on first boot
+firstboot --enable
+ignoredisk --only-use=sda
+# Keyboard layouts
+keyboard --vckeymap=us --xlayouts=''
+# System language
+lang en_US.UTF-8
+
+# Network information
+network  --bootproto=dhcp --device=eth0 --ipv6=auto --activate
+network  --hostname=localhost.localdomain
+
+# Root password
+rootpw --iscrypted $6$qhwPJgD8EMkKs4RU$EdBDtted8mRt6HBGRr586yFmsRe07sA17XT6Xozgrq6JBbFUG.18orPiyVMh5Tg.5jBfv8QeWJH1mApUTYuN71
+# System services
+services --enabled="chronyd"
+# Do not configure the X Window System
+skipx
+# System timezone
+timezone US/Eastern --isUtc
+# System bootloader configuration
+bootloader --location=mbr --boot-drive=sda
+zerombr
+# Partition clearing information
+clearpart --all --initlabel --drives=sda
+part prepboot --fstype=prepboot --asprimary --size=8 --ondrive=sda
+part /boot --size 1024 --fstype xfs --asprimary --ondrive=sda
+part pv.01 --size 8096 --asprimary --grow --ondrive=sda
+volgroup vg1 pv.01
+logvol / --vgname vg1 --size 8000 --grow --name=root --fstype=xfs
+
+shutdown
+
+%packages
+@system-tools
+chrony
+yum
+
+%end
+
+%addon com_redhat_kdump --disable --reserve-mb='128'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=50 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=50 --notstrict --nochanges --notempty
+pwpolicy luks --minlen=6 --minquality=50 --notstrict --nochanges --notempty
+%end
