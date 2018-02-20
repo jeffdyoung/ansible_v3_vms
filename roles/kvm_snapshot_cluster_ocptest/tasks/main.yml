@@ -13,8 +13,8 @@
     name: kvm_snapshot_guest
   vars:
     kvm_snapshot_guest_hostnames: "{{ kvm_snapshot_cluster_id }}"
-    kvm_snapshot_guest_ram: 102400
-    kvm_snapshot_guest_vcpus: 48
+    kvm_snapshot_guest_ram: 8192
+    kvm_snapshot_guest_vcpus: 2
 - name: Create cluster inventory directories
   file:
     path: "inventory/cluster-{{ kvm_snapshot_cluster_id }}/group_vars"

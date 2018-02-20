@@ -21,8 +21,8 @@
 - name: Create the VMs
   command: >
     virt-install --name {{ item }}
-    --vcpus={{ kvm_snapshot_guest_vcpus }},threads=8 --ram={{ kvm_snapshot_guest_ram }}
-    --os-type=linux --os-variant={{ 'rhel7' if kvm_snapshot_base_os in ['rhel7', 'centos7'] else kvm_snapshot_base_os }}
+    --vcpus={{ kvm_snapshot_guest_vcpus }} --ram={{ kvm_snapshot_guest_ram }}
+    --os-type=linux --os-variant={{ 'rhel7' if kvm_snapshot_base_os in ['rhel7', 'centos7'] else 'fedora-unknown' if kvm_snapshot_base_os in ['fedora25', 'fedora26','fedora27'] else kvm_snapshot_base_os }}
     --controller type=scsi,model=virtio-scsi
     --disk path=/dev/{{ kvm_snapshot_base_vg }}/{{ item }},cache=none,io=native,discard=unmap,bus=scsi
     --network network={{ kvm_snapshot_cluster_id }}
