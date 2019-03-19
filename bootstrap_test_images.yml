@@ -79,7 +79,7 @@
 
   - name: Install the Red Hat CA
     package:
-      name: http://hdn.corp.redhat.com/rhel7-csb-stage/RPMS/noarch/redhat-internal-cert-install-0.1-7.el7.csb.noarch.rpm
+      name: http://hdn.corp.redhat.com/rhel7-csb-stage/RPMS/noarch/redhat-internal-cert-install-0.1-9.el7.csb.noarch.rpm
       state: present
     notify: Restart Docker
 

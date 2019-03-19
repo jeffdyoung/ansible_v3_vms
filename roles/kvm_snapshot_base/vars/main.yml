@@ -34,3 +34,9 @@ kvm_snapshot_base_repos:
   fedora27:
     netboot: "{{ kvm_snapshot_base_netboot_fedora_repo }}"
     install: "{{ kvm_snapshot_base_netboot_fedora_repo }}"
+  fedora28:
+    netboot: "{{ kvm_snapshot_base_netboot_fedora_repo }}"
+    install: "{{ kvm_snapshot_base_netboot_fedora_repo }}"
+  fedora29:
+    netboot: http://mirrors.kernel.org/fedora-secondary/releases/29/Everything/ppc64le/os/
+    install: http://mirrors.kernel.org/fedora-secondary/releases/29/Everything/ppc64le/os/
