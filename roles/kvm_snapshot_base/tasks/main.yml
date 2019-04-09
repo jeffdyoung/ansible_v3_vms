@@ -25,7 +25,7 @@
     lvol:
       lv: "{{ kvm_snapshot_base_thin_pool }}"
       vg: "{{ kvm_snapshot_base_vg }}"
-      size: 300G
+      size: 400G
       state: present
       opts: -T
 
